@@ -28,11 +28,14 @@ K8S_BUILD_VERSION=$(curl -s https://storage.googleapis.com/k8s-release-dev/ci/la
 # Run kubetest2 tf
 kubetest2 tf \
   --powervs-image-name CentOS-Stream-10 \
-  --powervs-ssh-key k8s-prow-sshkey \
+  --powervs-region eu-de \
+  --powervs-zone eu-de-1 \
+  --powervs-service-id 40436067-5624-4185-a3d4-b0e071f13b2d \
+  --powervs-ssh-key powercloud-bot-key \
   --ssh-private-key /etc/secret-volume/ssh-privatekey \
-  --build-version "${K8S_BUILD_VERSION}" \
-  --release-marker "${K8S_BUILD_VERSION}" \
-  --cluster-name "pull-$(date +%s)" \
+  --build-version $K8S_BUILD_VERSION \
+  --release-marker $K8S_BUILD_VERSION \
+  --cluster-name pull-$(date +%s) \
   --workers-count 1 \
   --up --down \
   --auto-approve \
@@ -41,3 +44,5 @@ kubetest2 tf \
   --break-kubetest-on-upfail true \
   --powervs-memory 8 --powervs-processors 0.25 \
   --test=ginkgo --  --parallel 30 --test-package-dir ci --test-package-version "${K8S_BUILD_VERSION}" --focus-regex='Pods should be submitted and removed'
+  --powervs-processors 0.25 \
+  --test=ginkgo --  --parallel 5 --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='Pods should be submitted and removed'
